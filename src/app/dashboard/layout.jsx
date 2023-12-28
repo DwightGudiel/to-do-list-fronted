@@ -2,7 +2,7 @@
 
 // Componentes
 import Aside from "@/components/aside";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 
@@ -12,10 +12,11 @@ function LayoutApp({ children }) {
   const token = getCookie("_token");
   const router = useRouter();
 
-  if(!token){
-    router.push("/");
-    return;
-  }
+  useEffect(() => {
+    if (!token) {
+      router.push("/");
+    }
+  }, [token, router]);
 
   return (
     <>
