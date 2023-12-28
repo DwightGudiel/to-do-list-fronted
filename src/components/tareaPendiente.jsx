@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import {formatFecha, convertirMinutosAHoras} from "@/app/utilidades";
 
 const TareaPendiente = ({ tarea, handleCompletarTarea, setShowModal, handleUpdate }) => {
   const handleCheckboxClick = (id) => {
@@ -31,7 +32,7 @@ const TareaPendiente = ({ tarea, handleCompletarTarea, setShowModal, handleUpdat
         <div className="col-span-10">
           <p className="ml-3 text-sm">
             {" "}
-            <span className="font-bold capitalize">{`${tarea?.plataforma} - ${tarea?.fecha_vencimiento}:`}</span>{" "}
+            <span className="font-bold capitalize">{`${tarea?.plataforma} - ${formatFecha(tarea?.fecha_vencimiento)} - ${convertirMinutosAHoras(tarea?.hora)}:`}</span>{" "}
             {tarea?.descripcion}
           </p>
         </div>

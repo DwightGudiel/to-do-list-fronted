@@ -56,7 +56,7 @@ function Aside({ open, setOpen }) {
             {Menus.map((Menu, index) => (
              <div key={index}>
              {(usuario?.role === "administrador" && Menu.title !== "Mis Tareas") ||
-             (usuario?.role === "empleado" && Menu.title === "Mis Tareas") ? (
+             (usuario?.role === "colaborador" && Menu.title === "Mis Tareas") ? (
                <Link
                  key={index}
                  href={Menu.path}

@@ -113,7 +113,7 @@ function Usuarios() {
       options: [
         { value: "", label: "Selecciona un rol" },
         { value: "administrador", label: "Administrador" },
-        { value: "empleado", label: "Empleado" },
+        { value: "colaborador", label: "Colaborador" },
       ],
       // Validacion
       ...(isUpdatingUsuario ? {} : { required: "El rol es requerido" }),
@@ -123,7 +123,7 @@ function Usuarios() {
   const listarUsuarios = async () => {
     try {
       setLoading(true);
-      const url = "http://127.0.0.1:8000/api/users";
+      const url = "http://tareas.webdevgt.com/api/users";
       const response = await axios(url);
       setLoading(false);
       setUsuarios(response.data);
@@ -147,7 +147,7 @@ function Usuarios() {
         }
 
         const response = await axios.put(
-          `http://127.0.0.1:8000/api/usuario/${data.id}`,
+          `http://tareas.webdevgt.com/api/usuario/${data.id}`,
           data
         );
         console.log(response);
@@ -159,7 +159,7 @@ function Usuarios() {
         return;
       }
 
-      await axios.post("http://127.0.0.1:8000/api/register", data);
+      await axios.post("http://tareas.webdevgt.com/api/register", data);
       setShowModal(false);
       await listarUsuarios();
       toast.success("Usuario creado con exito");
@@ -175,7 +175,7 @@ function Usuarios() {
       );
 
       if (confirmation) {
-        await axios.delete(`http://127.0.0.1:8000/api/usuario/${id}`);
+        await axios.delete(`http://tareas.webdevgt.com/api/usuario/${id}`);
         await listarUsuarios();
         toast.warning("El usuario ha sido eliminado con exito");
       }
@@ -204,7 +204,7 @@ function Usuarios() {
 
   return (
     <LayoutApp>
-      {usuario?.role !== "empleado" ? (
+      {usuario?.role !== "colaborador" ? (
         <>
           <div className="flex items-center justify-between gap-4 pb-4">
             <Boton onClick={() => setShowModal(true)}>

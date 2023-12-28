@@ -5,14 +5,19 @@ import { getCookie } from "cookies-next";
 import axios from "axios";
 import TareaCompletada from "./tareaCompletada";
 import TareaPendiente from "./tareaPendiente";
-import {toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import Modal from "./modal";
 import Form from "./formulario";
 
+
 function ContenedorTareas() {
-  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
+  const fechaActual = new Date();
+const offset = fechaActual.getTimezoneOffset() * 60000; // Convertir el desfase a milisegundos
+const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(fechaLocal);
   const [descripcion, setDescripcion] = useState("");
   const [plataforma, setPlataforma] = useState("");
+  const [horaSeleccionada, setHoraSeleccionada] = useState("");
   const usuario = JSON.parse(getCookie("usuario"));
   const [tareas, setTareas] = useState([]);
   const [tareasCompletadas, setTareasCompletadas] = useState([]);
@@ -47,7 +52,6 @@ function ContenedorTareas() {
         { value: "completada", label: "Completada" },
         { value: "atrasada", label: "Atrasada" },
       ],
-   
     },
     {
       name: "fecha_vencimiento",
@@ -55,16 +59,16 @@ function ContenedorTareas() {
     },
   ];
 
-
   const listarTareas = async () => {
     try {
-      const url = `http://127.0.0.1:8000/api/tareas/${usuario?.id}`;
+      const url = `http://tareas.webdevgt.com/api/tareas/${usuario?.id}`;
       const response = await axios(url);
 
-      const tareasPendientes = response.data.filter(tarea => tarea?.estado === "pendiente")
-      
-      console.log("uwu",tareasPendientes);
-      
+      const tareasPendientes = response.data.filter(
+        (tarea) => tarea?.estado === "pendiente"
+      );
+
+      console.log("uwu", tareasPendientes);
 
       setTareas(tareasPendientes);
 
@@ -76,7 +80,7 @@ function ContenedorTareas() {
 
   const listarTareasAtrasadas = async () => {
     try {
-      const url = `http://127.0.0.1:8000/api/tareas-atrasadas/${usuario?.id}`;
+      const url = `http://tareas.webdevgt.com/api/tareas-atrasadas/${usuario?.id}`;
       const response = await axios(url);
 
       const data = response.data;
@@ -87,17 +91,28 @@ function ContenedorTareas() {
   };
 
   const listarTareasCompletadas = (tareas) => {
-    const completadas = tareas.filter(tarea => tarea?.estado === "completada");
+    const completadas = tareas.filter(
+      (tarea) => tarea?.estado === "completada"
+    );
     setTareasCompletadas(completadas);
-  }
+  };
 
   const handleSubmitTarea = async (e) => {
     e.preventDefault();
- 
-    try {
-      const url = "http://127.0.0.1:8000/api/tareas/crear";
 
-      const tarea = { users_id: usuario.id, descripcion: descripcion.trim(), plataforma: plataforma.trim(), estado: "pendiente", fecha_vencimiento: fechaSeleccionada };
+    try {
+      const url = "http://tareas.webdevgt.com/api/tareas/crear";
+
+      const tarea = {
+        users_id: usuario.id,
+        descripcion: descripcion.trim(),
+        plataforma: plataforma.trim(),
+        estado: "pendiente",
+        fecha_vencimiento: fechaSeleccionada,
+        hora: horaSeleccionada,
+      };
+
+      console.log(tarea);
 
       if (tarea.descripcion === "" || tarea.plataforma === "") {
         toast.error("Todos los campos son obligatorios");
@@ -108,33 +123,46 @@ function ContenedorTareas() {
 
       await listarTareas();
 
+      setDescripcion("");
+      setPlataforma("");
+
       toast.success("La tarea fue creada exitosamente");
       console.log(response);
     } catch (error) {
-       console.log(error);
+      console.log(error);
     }
   };
 
   const handleCompletarTarea = async (id) => {
     try {
-      console.log(id);
-      const url = `http://127.0.0.1:8000/api/tarea/completar/${id}`;
-      const response = await axios.post(url);
+      const estado = { estado: "completada" };
+      const url = `http://tareas.webdevgt.com/api/tarea/completar/${id}`;
+      const response = await axios.post(url, estado);
       console.log(response);
       await listarTareas();
       await listarTareasAtrasadas();
-   } catch (error) {
-     console.log(error);
-   }
-  }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCambiarEstadoTarea = async (id, estaCompletada) => {
+    try {
+      const nuevoEstado = estaCompletada ? "completada" : "pendiente";
+      const url = `http://tareas.webdevgt.com/api/tarea/completar/${id}`;
+      const response = await axios.post(url, { estado: nuevoEstado });
+      console.log(response);
+      await listarTareas();
+      await listarTareasAtrasadas();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSubmit = async (data) => {
     try {
       console.log(data);
-      await axios.put(
-        `http://127.0.0.1:8000/api/tarea/${data.id}`,
-        data
-      );
+      await axios.put(`http://tareas.webdevgt.com/api/tarea/${data.id}`, data);
       setShowModal(false);
       await listarTareas();
       await listarTareasAtrasadas();
@@ -149,23 +177,30 @@ function ContenedorTareas() {
   };
 
   const handleUpdate = (id) => {
-    const completada = tareasCompletadas.find((tarea) => tarea.id === id);
+    // const completada = tareasCompletadas.find((tarea) => tarea.id === id);
     const atrasada = tareasAtrasadas.find((tarea) => tarea.id === id);
     const pendiente = tareas.find((tarea) => tarea.id === id);
-    
-    if (completada) {
-      setInitialValues(completada);
-    } else if (atrasada) {
+
+    // if (completada) {
+    //   setInitialValues(completada);
+    // } else if (atrasada) {
+    //   setInitialValues(atrasada);
+    // } else if (pendiente) {
+    //   setInitialValues(pendiente);
+    // } else {
+    //   setInitialValues({});
+    // }
+
+    if (atrasada) {
       setInitialValues(atrasada);
     } else if (pendiente) {
       setInitialValues(pendiente);
     } else {
       setInitialValues({});
     }
-  
+
     setShowModal(true);
   };
-  
 
   useEffect(() => {
     listarTareas();
@@ -187,7 +222,13 @@ function ContenedorTareas() {
         </h2>{" "}
         <ul className="md:overflow-y-auto">
           {tareasAtrasadas.map((tarea, index) => (
-            <TareaPendiente key={index} tarea={tarea} handleCompletarTarea={handleCompletarTarea}  setShowModal={setShowModal} handleUpdate={handleUpdate}/>
+            <TareaPendiente
+              key={index}
+              tarea={tarea}
+              handleCompletarTarea={handleCompletarTarea}
+              setShowModal={setShowModal}
+              handleUpdate={handleUpdate}
+            />
           ))}
         </ul>
       </div>
@@ -214,9 +255,7 @@ function ContenedorTareas() {
               value={plataforma}
               onChange={(e) => setPlataforma(e.target.value)}
             >
-              <option value="">
-                Plataforma
-              </option>
+              <option value="">Plataforma</option>
               <option value="atulado">Atulado</option>
               <option value="caplin">Caplin</option>
               <option value="lancasco">Lancasco</option>
@@ -230,6 +269,29 @@ function ContenedorTareas() {
               value={fechaSeleccionada}
               onChange={(e) => setFechaSeleccionada(e.target.value)}
             />
+
+            <select
+              className="w-2/12 focus:outline-none text-sm"
+              id="hora"
+              name="hora"
+              value={horaSeleccionada}
+              onChange={(e) => setHoraSeleccionada(e.target.value)}
+            >
+              <option value="">Hora</option>
+              <option value="5">5 min</option>
+              <option value="10">10 min</option>
+              <option value="15">15 min</option>
+              <option value="20">20 min</option>
+              <option value="25">25 min</option>
+              <option value="30">30 min</option>
+              <option value="40">40 min</option>
+              <option value="50">50 min</option>
+              <option value="60">1 hr</option>
+              <option value="120">2 hrs</option>
+              <option value="240">4 hrs</option>
+              <option value="360">6 hrs</option>
+              <option value="480">8 hrs</option>
+            </select>
           </div>
 
           <button
@@ -248,7 +310,13 @@ function ContenedorTareas() {
         </h2>{" "}
         <ul className="md:overflow-y-auto">
           {tareas.map((tarea, index) => (
-            <TareaPendiente key={index} tarea={tarea} handleCompletarTarea={handleCompletarTarea} setShowModal={setShowModal} handleUpdate={handleUpdate}/>
+            <TareaPendiente
+              key={index}
+              tarea={tarea}
+              handleCompletarTarea={handleCompletarTarea}
+              setShowModal={setShowModal}
+              handleUpdate={handleUpdate}
+            />
           ))}
         </ul>
       </div>
@@ -256,11 +324,17 @@ function ContenedorTareas() {
       {/* Task List */}
       <div className=" bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 mt-10">
         <h2 className="text-lg font-bold mb-4 text-green-600">
-          Tareas Completadas:  {tareasCompletadas.length}
+          Tareas Completadas: {tareasCompletadas.length}
         </h2>{" "}
         <ul className="md:overflow-y-auto">
-          {tareasCompletadas.map((tarea, index) => (
-            <TareaCompletada key={index} tarea={tarea} setShowModal={setShowModal} handleUpdate={handleUpdate}/>
+          {tareasCompletadas.map((tarea) => (
+            <TareaCompletada
+              key={tarea?.id}
+              tarea={tarea}
+              // setShowModal={setShowModal}
+              // handleUpdate={handleUpdate}
+              handleCambiarEstadoTarea={handleCambiarEstadoTarea}
+            />
           ))}
         </ul>
       </div>
@@ -268,10 +342,10 @@ function ContenedorTareas() {
       <Modal isOpen={showModal} onClose={handleCloseModal}>
         <h2 className="text-lg font-medium mb-4">Actualizar Tarea</h2>
         <Form
-              inputs={inputs}
-              onSubmit={handleSubmit}
-              initialValues={initialValues}
-            />
+          inputs={inputs}
+          onSubmit={handleSubmit}
+          initialValues={initialValues}
+        />
       </Modal>
     </div>
   );

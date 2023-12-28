@@ -22,7 +22,7 @@ function FormLogin() {
     try {
       setFormSubmitted(true);
   
-      const url = "http://127.0.0.1:8000/api/login";
+      const url = "http://tareas.webdevgt.com/api/login";
 
       const usuario = { email: email.trim(), password: password.trim() };
 
@@ -41,16 +41,24 @@ function FormLogin() {
 
       // Guardar el token en las cookies
       setCookie("_token", token, {
-        maxAge: 28800, // Duración de la cookie en segundos
+        maxAge: 86400, // Duración de la cookie en segundos
         path: "/", // Ruta de acceso de la cookie
       });
+
+      const {role} = response.data.usuario;
 
       setCookie("usuario", JSON.stringify(response.data.usuario), {
         path: "/", 
       });
 
       // Redireccionar a la ruta indicada
-      router.push("/dashboard");
+      if(role === "administrador"){
+        router.push("/admin");
+      }
+      else{
+        router.push("/mis-tareas");
+      }
+      
 
     } catch (error) {
       setFormSubmitted(false);

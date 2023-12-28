@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function FiltroAdmin() {
+function FiltroAdmin({ onFilterChange }) {
   const [selectedStatus, setSelectedStatus] = useState("todas");
   const [selectedUser, setSelectedUser] = useState("todos");
 
@@ -11,6 +11,11 @@ function FiltroAdmin() {
   const handleUserChange = (e) => {
     setSelectedUser(e.target.value);
   };
+
+  useEffect(() => {
+    onFilterChange({ selectedStatus, selectedUser });
+  }, [selectedStatus, selectedUser, onFilterChange]);
+
 
   return (
     <div className="p-4">
@@ -25,7 +30,7 @@ function FiltroAdmin() {
           <option value="todas">Todas</option>
           <option value="atrasada">Atrasada</option>
           <option value="completada">Completada</option>
-          <option value="pendiente">Curso</option>
+          <option value="pendiente">Pendiente</option>
         </select>
 
         <label className="font-bold" htmlFor="">Usuario: </label>
@@ -36,9 +41,8 @@ function FiltroAdmin() {
           onChange={handleUserChange}
         >
           <option value="todos">Todos</option>
-          <option value="wilson">Wilson</option>
-          <option value="carlos">Carlos</option>
-          <option value="dwight">Dwight</option>
+          <option value="Carlos">Carlos</option>
+          <option value="Dwight Gudiel">Dwight Gudiel</option>
         </select>
       </div>
     </div>
