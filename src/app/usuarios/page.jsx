@@ -122,7 +122,7 @@ function Usuarios() {
   const listarUsuarios = async () => {
     try {
       setLoading(true);
-      const url = "http://tareas.webdevgt.com/api/users";
+      const url = "https://webdevgt.com/pwg/public/api/users";
       const response = await axios(url);
       setLoading(false);
       setUsuarios(response.data);
@@ -146,7 +146,7 @@ function Usuarios() {
         }
 
         const response = await axios.put(
-          `http://tareas.webdevgt.com/api/usuario/${data.id}`,
+          `https://webdevgt.com/pwg/public/api/usuario/${data.id}`,
           data
         );
         console.log(response);
@@ -158,7 +158,7 @@ function Usuarios() {
         return;
       }
 
-      await axios.post("http://tareas.webdevgt.com/api/register", data);
+      await axios.post("https://webdevgt.com/pwg/public/api/register", data);
       setShowModal(false);
       await listarUsuarios();
       toast.success("Usuario creado con exito");
@@ -174,7 +174,7 @@ function Usuarios() {
       );
 
       if (confirmation) {
-        await axios.delete(`http://tareas.webdevgt.com/api/usuario/${id}`);
+        await axios.delete(`https://webdevgt.com/pwg/public/api/usuario/${id}`);
         await listarUsuarios();
         toast.warning("El usuario ha sido eliminado con exito");
       }

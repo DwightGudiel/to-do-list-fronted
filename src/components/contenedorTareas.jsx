@@ -61,7 +61,7 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
 
   const listarTareas = async () => {
     try {
-      const url = `http://tareas.webdevgt.com/api/tareas/${usuario?.id}`;
+      const url = `https://webdevgt.com/pwg/public/api/tareas/${usuario?.id}`;
       const response = await axios(url);
 
       const tareasPendientes = response.data.filter(
@@ -80,7 +80,7 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
 
   const listarTareasAtrasadas = async () => {
     try {
-      const url = `http://tareas.webdevgt.com/api/tareas-atrasadas/${usuario?.id}`;
+      const url = `https://webdevgt.com/pwg/public/api/tareas-atrasadas/${usuario?.id}`;
       const response = await axios(url);
 
       const data = response.data;
@@ -101,7 +101,7 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
     e.preventDefault();
 
     try {
-      const url = "http://tareas.webdevgt.com/api/tareas/crear";
+      const url = "https://webdevgt.com/pwg/public/api/tareas/crear";
 
       const tarea = {
         users_id: usuario.id,
@@ -136,7 +136,7 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
   const handleCompletarTarea = async (id) => {
     try {
       const estado = { estado: "completada" };
-      const url = `http://tareas.webdevgt.com/api/tarea/completar/${id}`;
+      const url = `https://webdevgt.com/pwg/public/api/tarea/completar/${id}`;
       const response = await axios.post(url, estado);
       console.log(response);
       await listarTareas();
@@ -149,7 +149,7 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
   const handleCambiarEstadoTarea = async (id, estaCompletada) => {
     try {
       const nuevoEstado = estaCompletada ? "completada" : "pendiente";
-      const url = `http://tareas.webdevgt.com/api/tarea/completar/${id}`;
+      const url = `https://webdevgt.com/pwg/public/api/tarea/completar/${id}`;
       const response = await axios.post(url, { estado: nuevoEstado });
       console.log(response);
       await listarTareas();
@@ -162,7 +162,7 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
   const handleSubmit = async (data) => {
     try {
       console.log(data);
-      await axios.put(`http://tareas.webdevgt.com/api/tarea/${data.id}`, data);
+      await axios.put(`https://webdevgt.com/pwg/public/api/tarea/${data.id}`, data);
       setShowModal(false);
       await listarTareas();
       await listarTareasAtrasadas();

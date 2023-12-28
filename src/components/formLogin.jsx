@@ -22,7 +22,7 @@ function FormLogin() {
     try {
       setFormSubmitted(true);
   
-      const url = "http://tareas.webdevgt.com/api/login";
+      const url = "https://webdevgt.com/pwg/public/api/login";
 
       const usuario = { email: email.trim(), password: password.trim() };
 

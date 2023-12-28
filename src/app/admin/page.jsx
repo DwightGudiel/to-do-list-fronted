@@ -57,7 +57,7 @@ function Admin() {
   const listarTareas = async () => {
     try {
       setLoading(true);
-      const url = `http://tareas.webdevgt.com/api/tareas`;
+      const url = `https://webdevgt.com/pwg/public/api/tareas`;
       const response = await axios(url);
       setLoading(false);
       setTareas(response.data);
