@@ -88,11 +88,12 @@ function Admin() {
 
   const usuario = JSON.parse(usuarioData ?? "{}");
 
-  if (!usuarioData) {
-    router.push("/");
-    return;
-  }
-
+  useEffect(() => {
+    if (!usuarioData) {
+      router.push("/");
+      return;
+    }
+  },[]);
   
   return (
     <LayoutApp>

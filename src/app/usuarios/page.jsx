@@ -20,7 +20,6 @@ function Usuarios() {
   const [isUpdatingUsuario, setIsUpdatingUsuario] = useState(false);
   const router = useRouter();
   const usuarioData = getCookie("usuario");
-  let usuario = "";
 
   // Table
   const headers = [
@@ -196,11 +195,16 @@ function Usuarios() {
   }, []);
 
 
-  if (!usuarioData) {
-    router.push("/");
-    return;
-  }
-  usuario = JSON.parse(usuarioData);
+  
+  const usuario = JSON.parse(usuarioData ?? "{}");
+
+  useEffect(() => {
+    if (!usuarioData) {
+      router.push("/");
+      return;
+  
+    }
+  },[]);
 
   return (
     <LayoutApp>
