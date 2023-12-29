@@ -102,7 +102,6 @@ function ContenedorTareas() {
     e.preventDefault();
 
     try {
-
       setFormSubmitted(true);
 
       const url = "https://webdevgt.com/pwg/public/api/tareas/crear";
@@ -116,7 +115,11 @@ function ContenedorTareas() {
         hora: horaSeleccionada,
       };
 
-      if (tarea.descripcion === "" || tarea.plataforma === "") {      
+      if (
+        tarea.descripcion === "" ||
+        tarea.plataforma === "" ||
+        horaSeleccionada === ""
+      ) {
         setFormSubmitted(false);
         toast.error("Todos los campos son obligatorios");
         return;
@@ -124,14 +127,12 @@ function ContenedorTareas() {
 
       const response = await axios.post(url, tarea);
 
-
       await listarTareas();
 
       setDescripcion("");
       setPlataforma("");
       setHoraSeleccionada("");
 
-      
       setFormSubmitted(false);
 
       toast.success("La tarea fue creada exitosamente");
@@ -271,6 +272,22 @@ function ContenedorTareas() {
               <option value="atulado">Atulado</option>
               <option value="caplin">Caplin</option>
               <option value="lancasco">Lancasco</option>
+              <option value="gutis GT">Gutis GT</option>
+              <option value="gutis regional">Gutis Regional</option>
+              <option value="gutis CR">Gutis CR</option>
+              <option value="medpharma">Medpharma</option>
+              <option value="farmadina">Farmadina</option>
+              <option value="global farma">Global Farma</option>
+              <option value="silanes">Silanes</option>
+              <option value="mi salud">Mi Salud</option>
+              <option value="plan esperanza">Plan Esperanza</option>
+              <option value="hadalabs">Hadalabs</option>
+              <option value="promefa">Promefa</option>
+              <option value="apac">Apac</option>
+              <option value="gruner">Gruner</option>
+              <option value="topfarma">Top Farma</option>
+              <option value="vizcaino">Vizcaino</option>
+              <option value="bienestar">Bienestar</option>
             </select>
 
             <input
