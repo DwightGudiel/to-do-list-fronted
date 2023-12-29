@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function FiltroAdmin({ onFilterChange }) {
+function FiltroAdmin({ onFilterChange, usuarios }) {
   const [selectedStatus, setSelectedStatus] = useState("todas");
   const [selectedUser, setSelectedUser] = useState("todos");
 
@@ -11,6 +11,8 @@ function FiltroAdmin({ onFilterChange }) {
   const handleUserChange = (e) => {
     setSelectedUser(e.target.value);
   };
+
+  const colaboradores = usuarios.filter(usuario => usuario?.role === "colaborador");
 
   useEffect(() => {
     onFilterChange({ selectedStatus, selectedUser });
@@ -41,8 +43,9 @@ function FiltroAdmin({ onFilterChange }) {
           onChange={handleUserChange}
         >
           <option value="todos">Todos</option>
-          <option value="Carlos">Carlos</option>
-          <option value="Dwight Gudiel">Dwight Gudiel</option>
+          {colaboradores.map(colaborador => (
+                  <option key={colaborador?.id} value={`${colaborador?.name}`}>{colaborador?.name}</option>
+          ))}
         </select>
       </div>
     </div>

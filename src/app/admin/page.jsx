@@ -14,7 +14,7 @@ function Admin() {
   const router = useRouter();
   const [tareas, setTareas] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+  const [usuarios, setUsuarios] = useState([]);
   const [filtro, setFiltro] = useState({ selectedStatus: 'todas', selectedUser: 'todos' });
 
   const headers = [
@@ -66,8 +66,21 @@ function Admin() {
     }
   };
 
+  const listarUsuarios = async () => {
+    try {
+      setLoading(true);
+      const url = "https://webdevgt.com/pwg/public/api/users";
+      const response = await axios(url);
+      setLoading(false);
+      setUsuarios(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleFilterChange = useCallback((filtro) => {
     setFiltro(filtro);
+    listarUsuarios();
   }, [setFiltro]);
   
 
@@ -103,7 +116,7 @@ function Admin() {
             Administra las tareas
           </h1>
 
-          <FiltroAdmin onFilterChange={handleFilterChange} />
+          <FiltroAdmin usuarios={usuarios} onFilterChange={handleFilterChange} />
 
 
           <Table

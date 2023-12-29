@@ -9,15 +9,18 @@ import { useRouter } from "next/navigation";
 
 function LayoutApp({ children }) {
   const [open, setOpen] = useState(true);
-  const token = getCookie("_token");
+  const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (!token) {
+    const clientToken = getCookie("_token");
+    setToken(clientToken);
+  
+    if (!clientToken) {
       router.push("/");
     }
-  }, [token, router]);
-
+  }, [router]); 
+  
   return (
     <>
       {token ? (

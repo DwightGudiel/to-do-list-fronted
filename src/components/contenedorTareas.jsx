@@ -9,11 +9,10 @@ import { toast } from "react-toastify";
 import Modal from "./modal";
 import Form from "./formulario";
 
-
 function ContenedorTareas() {
   const fechaActual = new Date();
-const offset = fechaActual.getTimezoneOffset() * 60000; // Convertir el desfase a milisegundos
-const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
+  const offset = fechaActual.getTimezoneOffset() * 60000; // Convertir el desfase a milisegundos
+  const fechaLocal = new Date(fechaActual - offset).toISOString().split("T")[0];
   const [fechaSeleccionada, setFechaSeleccionada] = useState(fechaLocal);
   const [descripcion, setDescripcion] = useState("");
   const [plataforma, setPlataforma] = useState("");
@@ -24,6 +23,8 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
   const [tareasAtrasadas, setTareasAtrasadas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [initialValues, setInitialValues] = useState({});
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
   const inputs = [
     {
       name: "descripcion",
@@ -101,6 +102,9 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
     e.preventDefault();
 
     try {
+
+      setFormSubmitted(true);
+
       const url = "https://webdevgt.com/pwg/public/api/tareas/crear";
 
       const tarea = {
@@ -112,23 +116,28 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
         hora: horaSeleccionada,
       };
 
-      console.log(tarea);
-
-      if (tarea.descripcion === "" || tarea.plataforma === "") {
+      if (tarea.descripcion === "" || tarea.plataforma === "") {      
+        setFormSubmitted(false);
         toast.error("Todos los campos son obligatorios");
         return;
       }
 
       const response = await axios.post(url, tarea);
 
+
       await listarTareas();
 
       setDescripcion("");
       setPlataforma("");
+      setHoraSeleccionada("");
+
+      
+      setFormSubmitted(false);
 
       toast.success("La tarea fue creada exitosamente");
       console.log(response);
     } catch (error) {
+      setFormSubmitted(false);
       console.log(error);
     }
   };
@@ -162,7 +171,10 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
   const handleSubmit = async (data) => {
     try {
       console.log(data);
-      await axios.put(`https://webdevgt.com/pwg/public/api/tarea/${data.id}`, data);
+      await axios.put(
+        `https://webdevgt.com/pwg/public/api/tarea/${data.id}`,
+        data
+      );
       setShowModal(false);
       await listarTareas();
       await listarTareasAtrasadas();
@@ -294,12 +306,12 @@ const fechaLocal = new Date(fechaActual - offset).toISOString().split('T')[0];
             </select>
           </div>
 
-          <button
+          <input
             type="submit"
+            value={formSubmitted ? "Enviando........." : "Añadir Tarea"}
+            disabled={formSubmitted}
             className="bg-blue-500 text-sm hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
-          >
-            Añadir Tarea
-          </button>
+          />
         </form>
       </div>
 
