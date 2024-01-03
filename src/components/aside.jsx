@@ -13,7 +13,7 @@ import {
   DocumentChartBarIcon
 } from "@heroicons/react/24/solid";
 
-function Aside({ open, setOpen }) {
+function Aside() {
   const router = useRouter();
   const usuario = JSON.parse(getCookie("usuario"));
 
@@ -24,70 +24,47 @@ function Aside({ open, setOpen }) {
     { title: "Administrar", src: DocumentChartBarIcon, path: "/admin" },
   ];
 
-    // Cerrar Sesión
-    const handleLogout = () => {
-      deleteCookie("_token");
-      deleteCookie("usuario");
-      router.push("/");
-    };
+  // Cerrar Sesión
+  const handleLogout = () => {
+    deleteCookie("_token");
+    deleteCookie("usuario");
+    router.push("/");
+  };
 
   return (
-    <aside
-      className={` ${
-        open ? "md:w-1/4" : "md:w-36"
-      }  p-5 pt-8 relative duration-300 bg-blue-600 px-5 py-10 md:overflow-y-auto md:h-screen`}
-    >
-      <Bars4Icon
-        className="h-8 w-8  text-white font-black absolute cursor-pointer right-1 top-6"
-        onClick={() => setOpen(!open)}
-      />
-
+    <aside className="md:w-1/10 p-5 pt-8 relative duration-300 bg-blue-600 px-5 py-10 md:overflow-y-auto md:h-screen">
+      {/* ... */}
       <header className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-x-4 justify-center items-center py-3">
           <h1 className="text-white origin-left font-medium text-xl duration-200 ">
             PWG
           </h1>
-
-          <nav
-            className={`${
-              !open ? "hidden lg:block" : "block lg:block"
-            } flex flex-col justify-center py-3`}
-          >
+          <nav className="flex flex-col justify-center py-3">
             {Menus.map((Menu, index) => (
-             <div key={index}>
-             {(usuario?.role === "administrador" && Menu.title !== "Mis Tareas") ||
-             (usuario?.role === "colaborador" && Menu.title === "Mis Tareas") ? (
-               <Link
-                 key={index}
-                 href={Menu.path}
-                 className={`mt-5 flex ${
-                   !open ? "justify-center" : ""
-                 } w-full rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm gap-x-10 transition-colors duration-300 hover:bg-gray-200 hover:text-blue-600`}
-               >
-                 <Menu.src className="h-6 w-6" />
-                 <span
-                   className={`${
-                     !open && "hidden"
-                   } text-lg font-black origin-left duration-200`}
-                 >
-                   {Menu.title}
-                 </span>
-               </Link>
-             ) : null}
-           </div>
+              <div key={index}>
+                {(usuario?.role === "administrador" && Menu.title !== "Mis Tareas") ||
+                (usuario?.role === "colaborador" && Menu.title === "Mis Tareas") ? (
+                  <Link
+                    key={index}
+                    href={Menu.path}
+                    className="w-full my-4 rounded-md p-2 cursor-pointer transition-colors duration-300 hover:bg-gray-200 hover:text-blue-600 flex items-center text-white"
+                  >
+                    <Menu.src className="h-6 w-6" />
+                    {/* <span className="text-lg font-black origin-left duration-200">
+                      {Menu.title}
+                    </span> */}
+                  </Link>
+                ) : null}
+              </div>
             ))}
           </nav>
         </div>
-
         {/* cerrar sesion */}
         <button
           onClick={handleLogout}
           className="flex text-sm gap-x-4 items-center justify-center cursor-pointer text-white p-2 rounded-sm transition-colors duration-300 hover:bg-gray-200 hover:text-blue-600"
         >
-          <ArrowLeftOnRectangleIcon className="w-8 h-8 " />
-          <span className={`${!open && "hidden"} font-black`}>
-            Cerrar Sesión{" "}
-          </span>
+          <ArrowLeftOnRectangleIcon className="w-8 h-8" />
         </button>
       </header>
     </aside>

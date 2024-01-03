@@ -6,30 +6,27 @@ import { useState, useEffect } from "react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 
-
 function LayoutApp({ children }) {
-  const [open, setOpen] = useState(true);
   const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     const clientToken = getCookie("_token");
     setToken(clientToken);
-  
+
     if (!clientToken) {
       router.push("/");
     }
-  }, [router]); 
-  
+  }, [router]);
+
   return (
     <>
       {token ? (
         <div className="md:flex md:min-h-screen">
-          <Aside setOpen={setOpen} open={open} />
+          <Aside />
           <main
-            className={`${
-              open ? "md:w-3/4" : "md:w-full"
-            } md:h-screen overflow-auto p-10`}
+            className="md:w-full
+            md:h-screen overflow-auto p-10"
           >
             {children}
           </main>
