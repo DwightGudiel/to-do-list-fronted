@@ -43,6 +43,24 @@ function ContenedorTareas() {
         { value: "atulado", label: "Atulado" },
         { value: "caplin", label: "Caplin" },
         { value: "lancasco", label: "Lancasco" },
+        { value: "gutis GT", label: "Gutis GT" },
+        { value: "gutis regional", label: "Gutis Regional" },
+        { value: "gutis CR", label: "Gutis CR" },
+        { value: "medpharma", label: "Medpharma" },
+        { value: "farmadina", label: "Farmadina" },
+        { value: "La Sante", label: "La Sante" },
+        { value: "global farma", label: "Global Farma" },
+        { value: "silanes", label: "Silanes" },
+        { value: "mi salud", label: "Mi Salud" },
+        { value: "plan esperanza", label: "Plan Esperanza" },
+        { value: "hadalabs", label: "Hadalabs" },
+        { value: "promefa", label: "Promefa" },
+        { value: "apac", label: "Apac" },
+        { value: "gruner", label: "Gruner" },
+        { value: "topfarma", label: "Top Farma" },
+        { value: "vizcaino", label: "Vizcaino" },
+        { value: "bienestar", label: "Bienestar" },
+        { value: "Otros", label: "Otros" },
       ],
     },
     {
@@ -57,6 +75,26 @@ function ContenedorTareas() {
     {
       name: "fecha_vencimiento",
       type: "date",
+    },
+    {
+      name: "hora",
+      type: "select",
+      options: [
+        { value: "", label: "Hora" },
+        { value: "5", label: "5 min" },
+        { value: "10", label: "10 min" },
+        { value: "15", label: "15 min" },
+        { value: "20", label: "20 min" },
+        { value: "25", label: "25 min" },
+        { value: "30", label: "30 min" },
+        { value: "40", label: "40 min" },
+        { value: "50", label: "50 min" },
+        { value: "60", label: "1 hr" },
+        { value: "120", label: "2 hrs" },
+        { value: "240", label: "4 hrs" },
+        { value: "360", label: "6 hrs" },
+        { value: "480", label: "8 hrs" },
+      ]      
     },
   ];
 
@@ -277,6 +315,7 @@ function ContenedorTareas() {
               <option value="gutis CR">Gutis CR</option>
               <option value="medpharma">Medpharma</option>
               <option value="farmadina">Farmadina</option>
+              <option value="farmadina">La Sante</option>
               <option value="global farma">Global Farma</option>
               <option value="silanes">Silanes</option>
               <option value="mi salud">Mi Salud</option>
@@ -288,6 +327,7 @@ function ContenedorTareas() {
               <option value="topfarma">Top Farma</option>
               <option value="vizcaino">Vizcaino</option>
               <option value="bienestar">Bienestar</option>
+              <option value="bienestar">Otros</option>
             </select>
 
             <input
