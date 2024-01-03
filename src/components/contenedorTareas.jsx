@@ -60,7 +60,7 @@ function ContenedorTareas() {
         { value: "topfarma", label: "Top Farma" },
         { value: "vizcaino", label: "Vizcaino" },
         { value: "bienestar", label: "Bienestar" },
-        { value: "Otros", label: "Otros" },
+        { value: "otros", label: "Otros" },
       ],
     },
     {
@@ -327,7 +327,7 @@ function ContenedorTareas() {
               <option value="topfarma">Top Farma</option>
               <option value="vizcaino">Vizcaino</option>
               <option value="bienestar">Bienestar</option>
-              <option value="bienestar">Otros</option>
+              <option value="otros">Otros</option>
             </select>
 
             <input
