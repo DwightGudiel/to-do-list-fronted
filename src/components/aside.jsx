@@ -37,7 +37,7 @@ function Aside() {
       <header className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-x-4 justify-center items-center py-3">
           <h1 className="text-white origin-left font-medium text-xl duration-200 ">
-            PWG
+            PWG 
           </h1>
           <nav className="flex flex-col justify-center py-3">
             {Menus.map((Menu, index) => (
