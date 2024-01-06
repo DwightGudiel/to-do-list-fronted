@@ -104,6 +104,38 @@ function Admin() {
   }, [tareas, filtro.selectedStatus, filtro.selectedUser]);
   
 
+  
+  const calcularHorasTotalesUsuario = (tareasFiltradas) => {
+    const fechaActual = new Date().toISOString().split('T')[0]; // Obtenemos la fecha actual en formato YYYY-MM-DD
+  
+    return tareasFiltradas.reduce((result, tarea) => {
+      const userId = tarea.user?.id;
+      const tareaFecha = tarea.fecha_vencimiento;
+  
+      if (
+        userId &&
+        typeof tarea.hora === 'number' &&
+        tareaFecha &&
+        tarea.estado !== 'pendiente' &&
+        (tareaFecha === fechaActual || new Date(tareaFecha) < new Date(fechaActual))
+      ) {
+        const horasTotales = (result[userId]?.horasTotales || 0) + tarea.hora;
+        result[userId] = {
+          userId,
+          nombre: usuarios.find((user) => user.id === parseInt(userId))?.name,
+          horasTotales,
+        };
+      }
+  
+      return result;
+    }, {});
+  };
+  
+  const horasTotalesUsuarios = Object.values(
+    calcularHorasTotalesUsuario(tareasFiltradas)
+  );
+
+
 
   useEffect(() => {
     listarTareas();
@@ -126,6 +158,25 @@ function Admin() {
           <h1 className="text-2xl font-bold mb-4 my-10">
             Administra las tareas
           </h1>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            {horasTotalesUsuarios.map((usuario) => (
+              <div
+                key={usuario.userId}
+                className="max-w-sm mx-auto bg-white rounded-lg overflow-hidden shadow-md mb-4"
+              >
+                <div className="p-4">
+                  <h2 className="text-lg font-bold mb-2 text-gray-800">
+                    {usuario.nombre}
+                  </h2>
+                  <p className="text-gray-600">
+                    {`Horas Totales: ${convertirMinutosAHoras(usuario.horasTotales)}`}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
 
           <FiltroAdmin usuarios={usuarios} onFilterChange={handleFilterChange} />
 
