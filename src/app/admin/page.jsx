@@ -19,8 +19,9 @@ function Admin() {
 
   const headers = [
     { key: 1, label: "Descripcion" },
-    { key: 2, label: "Estado" },
-    { key: 3, label: "Colaborador" },
+    { key: 2, label: "Horas" },
+    { key: 3, label: "Estado" },
+    { key: 4, label: "Colaborador" },
   ];
 
   const columns = [
@@ -29,10 +30,20 @@ function Admin() {
       render: (tareas) => (
         <div>
           <p className="ml-3 text-sm">
-              {" "}
-              <span className="font-bold capitalize">{`${tareas?.plataforma} - ${formatFecha(tareas?.fecha_vencimiento)} - ${convertirMinutosAHoras(tareas?.hora)}:`}</span>{" "}
-              {tareas?.descripcion}
-            </p>
+            {" "}
+            <span className="font-bold capitalize">{`${
+              tareas?.plataforma
+            } - ${formatFecha(tareas?.fecha_vencimiento)} - `}</span>
+            {tareas?.descripcion}
+          </p>
+        </div>
+      ),
+    },
+    {
+      key: "hora",
+      render: (tareas) => (
+        <div>
+          <p className="ml-3 text-sm">{convertirMinutosAHoras(tareas?.hora)}</p>
         </div>
       ),
     },
