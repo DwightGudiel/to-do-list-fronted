@@ -3,9 +3,10 @@ const formatFecha = (fecha) => {
     day: "numeric",
     month: "numeric",
     year: "numeric",
-    timeZone: "UTC" // Asegura que se use la misma zona horaria
+    timeZone: "UTC" 
   };
-  // Asegúrate de que la fecha se interprete en UTC
+
+  
   const fechaUTC = new Date(fecha + 'T00:00:00Z');
   return fechaUTC.toLocaleDateString("es-GT", options);
 };

@@ -106,7 +106,7 @@ function Admin() {
 
   
   const calcularHorasTotalesUsuario = (tareasFiltradas) => {
-    const fechaActual = new Date().toISOString().split('T')[0]; // Obtenemos la fecha actual en formato YYYY-MM-DD
+    const fechaActual = new Date().toISOString().split('T')[0]; 
   
     return tareasFiltradas.reduce((result, tarea) => {
       const userId = tarea.user?.id;
@@ -116,8 +116,7 @@ function Admin() {
         userId &&
         typeof tarea.hora === 'number' &&
         tareaFecha &&
-        tarea.estado !== 'pendiente' &&
-        (tareaFecha === fechaActual || new Date(tareaFecha) < new Date(fechaActual))
+        (tarea.estado !== 'pendiente' || (tarea.estado === 'pendiente' && new Date(tareaFecha) <= new Date(fechaActual)))
       ) {
         const horasTotales = (result[userId]?.horasTotales || 0) + tarea.hora;
         result[userId] = {
@@ -166,11 +165,11 @@ function Admin() {
                 className="max-w-sm mx-auto bg-white rounded-lg overflow-hidden shadow-md mb-4"
               >
                 <div className="p-4">
-                  <h2 className="text-lg font-bold mb-2 text-gray-800">
+                  <h2 className="text-xl font-bold mb-2 text-gray-800 text-center">
                     {usuario.nombre}
                   </h2>
-                  <p className="text-gray-600">
-                    {`Horas Totales: ${convertirMinutosAHoras(usuario.horasTotales)}`}
+                  <p className="text-gray-600 font-bold text-xl">
+                    {`${convertirMinutosAHoras(usuario.horasTotales)}`}
                   </p>
                 </div>
               </div>

@@ -10,7 +10,8 @@ import {
   Bars4Icon,
   HomeIcon,
   UserIcon,
-  DocumentChartBarIcon
+  DocumentChartBarIcon,
+  ChartBarIcon
 } from "@heroicons/react/24/solid";
 
 function Aside() {
@@ -22,6 +23,7 @@ function Aside() {
     { title: "Mis Tareas", src: HomeIcon, path: "/mis-tareas" },
     { title: "Usuarios", src: UserIcon, path: "/usuarios" },
     { title: "Administrar", src: DocumentChartBarIcon, path: "/admin" },
+    { title: "Reportes", src: ChartBarIcon, path: "/reportes" },
   ];
 
   // Cerrar Sesión
