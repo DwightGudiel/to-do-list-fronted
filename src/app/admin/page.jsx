@@ -115,9 +115,9 @@ function Admin() {
       if (
         userId &&
         typeof tarea.hora === 'number' &&
-        tareaFecha &&
-        (tarea.estado !== 'pendiente' || (tarea.estado === 'pendiente' && new Date(tareaFecha) <= new Date(fechaActual)))
-      ) {
+        tarea.estado === 'completada' &&
+        tareaFecha
+        ) {
         const horasTotales = (result[userId]?.horasTotales || 0) + tarea.hora;
         result[userId] = {
           userId,
