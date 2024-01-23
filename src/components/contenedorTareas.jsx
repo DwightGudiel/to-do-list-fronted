@@ -60,6 +60,9 @@ function ContenedorTareas() {
         { value: "topfarma", label: "Top Farma" },
         { value: "vizcaino", label: "Vizcaino" },
         { value: "bienestar", label: "Bienestar" },
+        { value: "promociones", label: "Promociones" },
+        { value: "capacitacion", label: "Capacitación" },
+        { value: "cig", label: "CIG" },
         { value: "otros", label: "Otros" },
       ],
     },
@@ -327,6 +330,9 @@ function ContenedorTareas() {
               <option value="topfarma">Top Farma</option>
               <option value="vizcaino">Vizcaino</option>
               <option value="bienestar">Bienestar</option>
+              <option value="promociones">Promociones</option>
+              <option value="capacitacion">Capacitación</option>
+              <option value="cig">CIG</option>
               <option value="otros">Otros</option>
             </select>
 
