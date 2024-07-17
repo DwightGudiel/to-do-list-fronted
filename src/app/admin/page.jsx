@@ -7,7 +7,7 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Table from "@/components/tablaAdmin";
-import {formatFecha, convertirMinutosAHoras} from "@/app/utilidades";
+import { formatFecha, convertirMinutosAHoras } from "@/app/utilidades";
 
 function Admin() {
   const usuarioData = getCookie("usuario");
@@ -15,7 +15,11 @@ function Admin() {
   const [tareas, setTareas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
-  const [filtro, setFiltro] = useState({ selectedStatus: 'todas', selectedUser: 'todos' });
+  const [filtro, setFiltro] = useState({
+    selectedStatus: "todas",
+    selectedUser: "todos",
+    selectedDate: "",
+  });
 
   const headers = [
     { key: 1, label: "Descripcion" },
@@ -51,7 +55,17 @@ function Admin() {
       key: "estado",
       render: (tareas) => (
         <div>
-          <span className={`${tareas.estado === "completada" ? "bg-green-100 text-green-800 border-green-400" : tareas.estado === "atrasada" ? "bg-red-100 text-red-800 border-red-400 " : "bg-blue-100 text-blue-800 border-blue-400"} text-xs font-medium me-2 px-2.5 py-0.5 rounded border`}>{tareas?.estado}</span> 
+          <span
+            className={`${
+              tareas.estado === "completada"
+                ? "bg-green-100 text-green-800 border-green-400"
+                : tareas.estado === "atrasada"
+                ? "bg-red-100 text-red-800 border-red-400 "
+                : "bg-blue-100 text-blue-800 border-blue-400"
+            } text-xs font-medium me-2 px-2.5 py-0.5 rounded border`}
+          >
+            {tareas?.estado}
+          </span>
         </div>
       ),
     },
@@ -65,10 +79,15 @@ function Admin() {
     },
   ];
 
-  const listarTareas = async () => {
+  const listarTareas = async (fecha = "") => {
     try {
       setLoading(true);
-      const url = `https://webdevgt.com/pwg/public/api/tareas`;
+      let url = `https://webdevgt.com/pwg/public/api/tareas`;
+
+      if (fecha) {
+        url = `https://webdevgt.com/pwg/public/api/tareas/fecha/${fecha}`;
+      }
+
       const response = await axios(url);
       setLoading(false);
       setTareas(response.data);
@@ -89,35 +108,37 @@ function Admin() {
     }
   };
 
-  const handleFilterChange = useCallback((filtro) => {
-    setFiltro(filtro);
-    listarUsuarios();
-  }, [setFiltro]);
-  
+  const handleFilterChange = useCallback(
+    (filtro) => {
+      setFiltro(filtro);
+      listarUsuarios();
+    },
+    [setFiltro]
+  );
 
   const tareasFiltradas = useMemo(() => {
     return tareas.filter((tarea) => {
-      const filtroStatus = filtro.selectedStatus === 'todas' || tarea.estado === filtro.selectedStatus;
-      const filtroUser = filtro.selectedUser === 'todos' || tarea.user?.name === filtro.selectedUser;
+      const filtroStatus =
+        filtro.selectedStatus === "todas" ||
+        tarea.estado === filtro.selectedStatus;
+      const filtroUser =
+        filtro.selectedUser === "todos" ||
+        tarea.user?.name === filtro.selectedUser;
       return filtroStatus && filtroUser;
     });
   }, [tareas, filtro.selectedStatus, filtro.selectedUser]);
-  
 
-  
   const calcularHorasTotalesUsuario = (tareasFiltradas) => {
-    const fechaActual = new Date().toISOString().split('T')[0]; 
-  
     return tareasFiltradas.reduce((result, tarea) => {
       const userId = tarea.user?.id;
       const tareaFecha = tarea.fecha_vencimiento;
-  
+
       if (
         userId &&
-        typeof tarea.hora === 'number' &&
-        tarea.estado === 'completada' &&
+        typeof tarea.hora === "number" &&
+        tarea.estado === "completada" &&
         tareaFecha
-        ) {
+      ) {
         const horasTotales = (result[userId]?.horasTotales || 0) + tarea.hora;
         result[userId] = {
           userId,
@@ -125,21 +146,18 @@ function Admin() {
           horasTotales,
         };
       }
-  
+
       return result;
     }, {});
   };
-  
+
   const horasTotalesUsuarios = Object.values(
     calcularHorasTotalesUsuario(tareasFiltradas)
   );
 
-
-
   useEffect(() => {
     listarTareas();
-  }, []); 
-  
+  }, []); // Cargar las tareas por defecto al cargar el componente
 
   const usuario = JSON.parse(usuarioData ?? "{}");
 
@@ -148,8 +166,12 @@ function Admin() {
       router.push("/");
       return;
     }
-  },[]);
-  
+  }, []);
+
+  const handleDateFilter = () => {
+    listarTareas(filtro.selectedDate);
+  };
+
   return (
     <LayoutApp>
       {usuario?.role !== "colaborador" ? (
@@ -176,15 +198,42 @@ function Admin() {
             ))}
           </div>
 
+          <FiltroAdmin
+            usuarios={usuarios}
+            onFilterChange={handleFilterChange}
+          />
 
-          <FiltroAdmin usuarios={usuarios} onFilterChange={handleFilterChange} />
+          <hr />
 
+          <div className="p-4 my-5 w-1/4">
+            <div className="flex items-center flex-col md:flex-row gap-4">
+              <label className="font-bold" htmlFor="">
+                Fecha
+              </label>
+              <input
+                type="date"
+                id="fecha"
+                name="fecha"
+                className="mt-1 block w-full p-2 border border-solid border-gray-300 rounded shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={filtro.selectedDate}
+                onChange={(e) =>
+                  setFiltro({ ...filtro, selectedDate: e.target.value })
+                }
+              />
+
+              <button
+                onClick={handleDateFilter}
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Filtrar
+              </button>
+            </div>
+          </div>
 
           <Table
             headers={headers}
             columns={columns}
-            data={tareasFiltradas} 
-            // data={tareas}
+            data={tareasFiltradas}
             loading={loading}
           />
         </div>
